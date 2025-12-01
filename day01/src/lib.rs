@@ -40,6 +40,7 @@ fn part2(input: &str) {
         match dir {
             "L" => {
                 if pos == 0 {
+                    // This 0 has already been counted
                     countzero -= 1;
                 }
                 pos -= dist;
