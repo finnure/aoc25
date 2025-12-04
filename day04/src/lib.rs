@@ -25,8 +25,40 @@ fn part1(input: &str) -> i32 {
     sum
 }
 
-fn part2(_input: &str) -> i32 {
-    0
+fn part2(input: &str) -> i32 {
+    let mut lines: Vec<Vec<char>> = input
+        .lines()
+        .map(|line| line.chars().collect::<Vec<char>>())
+        .collect();
+    let mut sum = 0;
+    loop {
+        let count = count_and_update(&mut lines);
+        if count == 0 {
+            break;
+        }
+        sum += count;
+    }
+    sum
+}
+
+fn count_and_update(lines: &mut Vec<Vec<char>>) -> i32 {
+    let mut count = 0;
+    let copy_lines = lines.clone();
+    for line in 0..lines.len() {
+        for col in 0..lines[line].len() {
+            let c = lines[line][col];
+            match c {
+                '@' => {
+                    if count_adjacent(&copy_lines, line, col) < 4 {
+                        count += 1;
+                        lines[line][col] = 'O';
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    count
 }
 
 fn count_adjacent(lines: &Vec<Vec<char>>, line: usize, col: usize) -> i32 {
@@ -95,6 +127,6 @@ mod tests {
 .@@@@@@@@.
 @.@.@@@.@.";
         let result = part2(input);
-        assert_eq!(result, 0);
+        assert_eq!(result, 43);
     }
 }
