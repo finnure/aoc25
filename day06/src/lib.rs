@@ -30,8 +30,31 @@ fn part1(input: &str) -> u64 {
     result
 }
 
-fn part2(_input: &str) -> u64 {
-    0
+fn part2(input: &str) -> u64 {
+    let mut result = 0;
+    let lines: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
+    let mut sum = 0;
+    let mut mult = 1;
+    for i in (0..lines[0].len()).rev() {
+        let mut val = String::new();
+        for j in 0..(lines.len() - 1) {
+            val.push(lines[j][i]);
+        }
+        let num = val.trim().parse::<u64>().unwrap_or_else(|_| 0);
+        if num != 0 {
+            sum += num;
+            mult *= num;
+            match lines.last().unwrap()[i] {
+                '+' => result += sum,
+                '*' => result += mult,
+                _ => {}
+            }
+        } else {
+            sum = 0;
+            mult = 1;
+        }
+    }
+    result
 }
 
 #[cfg(test)]
