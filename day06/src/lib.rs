@@ -3,11 +3,34 @@ pub fn solve(input: &str) {
     println!("part 2: {}", part2(input));
 }
 
-fn part1(_input: &str) -> i32 {
-    0
+fn part1(input: &str) -> u64 {
+    let mut result = 0;
+    let lines: Vec<Vec<&str>> = input
+        .lines()
+        .map(|line| {
+            line.split(' ')
+                .filter(|s| !s.is_empty())
+                .collect::<Vec<&str>>()
+        })
+        .collect();
+    for i in 0..lines[0].len() {
+        let mut sum = 0;
+        let mut mult = 1;
+        for j in 0..(lines.len() - 1) {
+            let num = lines[j][i].parse::<u64>().unwrap();
+            sum += num;
+            mult *= num;
+        }
+        match lines.last().unwrap()[i] {
+            "+" => result += sum,
+            "*" => result += mult,
+            _ => panic!("Unknown operator"),
+        }
+    }
+    result
 }
 
-fn part2(_input: &str) -> i32 {
+fn part2(_input: &str) -> u64 {
     0
 }
 
@@ -18,22 +41,22 @@ mod tests {
     #[test]
     fn test_part1() {
         let input = "\
-987654321111111
-811111111111119
-234234234234278
-818181911112111";
+123 328  51 64 
+ 45 64  387 23 
+  6 98  215 314
+*   +   *   +  ";
         let result = part1(input);
-        assert_eq!(result, 0);
+        assert_eq!(result, 4277556);
     }
 
     #[test]
     fn test_part2() {
         let input = "\
-987654321111111
-811111111111119
-234234234234278
-818181911112111";
+123 328  51 64 
+ 45 64  387 23 
+  6 98  215 314
+*   +   *   +  ";
         let result = part2(input);
-        assert_eq!(result, 0);
+        assert_eq!(result, 3263827);
     }
 }
