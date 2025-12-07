@@ -35,8 +35,29 @@ fn part1(input: &str) -> i32 {
     result
 }
 
-fn part2(_input: &str) -> i32 {
-    0
+fn part2(input: &str) -> u64 {
+    let mut result = 1;
+    let mut gridlevels: HashMap<usize, u64> = HashMap::new();
+    let lines = input
+        .lines()
+        .map(|line| line.chars().collect::<Vec<char>>())
+        .collect::<Vec<Vec<char>>>();
+    for line in (0..lines.len()).rev() {
+        for i in 0..lines[line].len() {
+            match lines[line][i] {
+                'S' => {
+                    result = *gridlevels.get(&i).unwrap_or(&1);
+                }
+                '^' => {
+                    let left = gridlevels.get(&(i - 1)).unwrap_or(&1);
+                    let right = gridlevels.get(&(i + 1)).unwrap_or(&1);
+                    gridlevels.insert(i, left + right);
+                }
+                _ => { /* do nothing */ }
+            }
+        }
+    }
+    result
 }
 
 #[cfg(test)]
