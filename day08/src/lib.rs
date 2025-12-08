@@ -48,8 +48,44 @@ fn part1(input: &str, iters: Option<bool>) -> i32 {
     result
 }
 
-fn part2(_input: &str) -> i32 {
-    0
+fn part2(input: &str) -> i64 {
+    let mut result = 0;
+    let points: Vec<Rc<Point>> = input
+        .lines()
+        .map(|line| Rc::new(Point::from_str(line)))
+        .collect();
+    let mut pairs: Vec<Pair> = Vec::new();
+    for i in 0..points.len() {
+        for j in (i + 1)..points.len() {
+            let pair = Pair::new(Rc::clone(&points[i]), Rc::clone(&points[j]));
+            pairs.push(pair);
+        }
+    }
+    let mut circuits: Vec<Circuit> = Vec::new();
+    pairs.sort_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap());
+    for p in pairs.iter() {
+        let c1 = circuits.iter().position(|c| c.contains(&p.p1));
+        let c2 = circuits.iter().position(|c| c.contains(&p.p2));
+        if c1.is_some() && c2.is_some() && c1 != c2 {
+            let idx1 = c1.unwrap();
+            let idx2 = c2.unwrap();
+            let circuit2 = circuits.remove(idx2);
+            let new_idx1 = if idx2 < idx1 { idx1 - 1 } else { idx1 };
+            circuits[new_idx1].merge(&circuit2);
+            continue;
+        }
+        if let Some(idx) = circuits.iter().position(|c| c.contains_either(p)) {
+            circuits[idx].add_point(p);
+        } else {
+            let circuit = Circuit::new(p);
+            circuits.push(circuit);
+        }
+        if circuits.len() == 1 && circuits[0].size() == points.len() {
+            result = p.p1.x * p.p2.x;
+            break;
+        }
+    }
+    result
 }
 
 #[derive(Debug, PartialEq, PartialOrd)]
@@ -190,6 +226,6 @@ mod tests {
 984,92,344
 425,690,689";
         let result = part2(input);
-        assert_eq!(result, 0);
+        assert_eq!(result, 25272);
     }
 }
