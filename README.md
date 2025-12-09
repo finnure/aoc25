@@ -111,3 +111,15 @@ Calculate the Euclidean distance between all pairs of points. Connect points sta
 #### Part 2
 
 Continue connecting points by shortest distance. Find the pair that results in all points being connected into a single circuit. The answer is the product of the `x` positions of the two points that completed the circuit.
+
+### Day 9
+
+The input consists of a list of 2D coordinates representing the positions of red tiles arranged in a pattern.
+
+#### Part 1
+
+Identify the pair of red tiles that serve as opposite corners of the largest possible square that can be formed using any two red tiles as opposite corners, regardless of whether the square lies entirely within the pattern.
+
+#### Part 2
+
+The input describes a closed shape formed by straight lines connecting a sequence of points, with the last point connected back to the first. Find the largest square that can be placed inside the shape such that two of its opposite corners coincide with red tiles.
