@@ -1,3 +1,8 @@
+mod grid;
+use std::rc::Rc;
+
+use crate::grid::{Box, Line, Point};
+
 pub fn solve(input: &str) {
     println!("part 1: {}", part1(input));
     println!("part 2: {}", part2(input));
@@ -26,9 +31,40 @@ fn part1(input: &str) -> i64 {
     }
     result
 }
-
-fn part2(_input: &str) -> i32 {
-    0
+fn part2(input: &str) -> i64 {
+    let mut result = 0;
+    let points = input
+        .lines()
+        .map(|line| {
+            let parts = line.split(',').collect::<Vec<&str>>();
+            Point::new(parts[0], parts[1])
+        })
+        .collect::<Vec<Point>>();
+    let mut lines = Vec::new();
+    for i in 1..points.len() {
+        let line = Line::new(Rc::new(points[i - 1].clone()), Rc::new(points[i].clone()));
+        lines.push(line);
+    }
+    for i in 0..points.len() {
+        for j in i + 1..points.len() {
+            let mut box_ = Box::new(points[i].clone(), points[j].clone());
+            if box_.area() <= result {
+                continue;
+            }
+            let mut crosses = false;
+            for line in &lines {
+                box_.update_corners(line);
+                if box_.intersects(line) {
+                    crosses = true;
+                    break;
+                }
+            }
+            if !crosses && box_.is_valid() && box_.area() > result {
+                result = box_.area();
+            }
+        }
+    }
+    result
 }
 
 #[cfg(test)]
